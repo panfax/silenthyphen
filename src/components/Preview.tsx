@@ -41,9 +41,9 @@ export function Preview() {
   };
 
   return (
-    <div className="flex flex-col h-full bg-card">
+    <div className="flex flex-col h-full bg-card border">
       {/* Toolbar */}
-      <div className="flex flex-col gap-2 px-4 py-2 border-b bg-muted/30">
+      <div className="flex flex-col justify-center gap-1.5 px-4 border-b bg-muted/30 h-[60px]">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Eye className="h-4 w-4 text-muted-foreground" />

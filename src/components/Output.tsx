@@ -77,7 +77,7 @@ export function Output() {
   return (
     <div className="flex flex-col h-full bg-card">
       {/* Toolbar */}
-      <div className="flex items-center justify-between px-4 py-2 border-b bg-muted/30">
+      <div className="flex items-center justify-between px-4 border-b bg-muted/30 h-[60px]">
         <div className="flex items-center gap-2">
           <FileOutput className="h-4 w-4 text-muted-foreground" />
           <Label className="text-sm font-semibold">Output</Label>
