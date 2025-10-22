@@ -3,17 +3,19 @@
  */
 
 export interface HtmlToken {
-  type: 'text' | 'tag' | 'entity';
+  type: 'text' | 'tag' | 'entity' | 'skip';
   value: string;
 }
 
 /**
  * Parse HTML into tokens, separating text nodes from tags and entities
  * This ensures we only hyphenate text content, not markup
+ * Content inside <a> tags is marked as 'skip' to prevent hyphenation in links
  */
 export function parseHtml(html: string): HtmlToken[] {
   const tokens: HtmlToken[] = [];
   let currentIndex = 0;
+  let insideLink = false;
 
   // Pattern to match HTML tags or entities
   const pattern = /(<[^>]+>)|(&[a-zA-Z0-9#]+;)/g;
@@ -24,14 +26,26 @@ export function parseHtml(html: string): HtmlToken[] {
     if (match.index > currentIndex) {
       const textContent = html.substring(currentIndex, match.index);
       if (textContent) {
-        tokens.push({ type: 'text', value: textContent });
+        // Mark text inside <a> tags as 'skip' to prevent hyphenation
+        tokens.push({
+          type: insideLink ? 'skip' : 'text',
+          value: textContent
+        });
       }
     }
 
     // Add the tag or entity
     if (match[1]) {
       // HTML tag
-      tokens.push({ type: 'tag', value: match[1] });
+      const tag = match[1];
+      tokens.push({ type: 'tag', value: tag });
+
+      // Track if we're entering or exiting a link
+      if (/<a\s/i.test(tag)) {
+        insideLink = true;
+      } else if (/<\/a>/i.test(tag)) {
+        insideLink = false;
+      }
     } else if (match[2]) {
       // HTML entity
       tokens.push({ type: 'entity', value: match[2] });
@@ -44,7 +58,10 @@ export function parseHtml(html: string): HtmlToken[] {
   if (currentIndex < html.length) {
     const textContent = html.substring(currentIndex);
     if (textContent) {
-      tokens.push({ type: 'text', value: textContent });
+      tokens.push({
+        type: insideLink ? 'skip' : 'text',
+        value: textContent
+      });
     }
   }
 

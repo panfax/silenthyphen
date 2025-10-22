@@ -164,7 +164,21 @@ describe('Hyphenation Engine', () => {
     });
 
     it('should only hyphenate text nodes, not tags', () => {
-      const html = '<a href="https://example.com">Ladungssicherung</a>';
+      const html = '<p>Normal <strong>text</strong> here</p>';
+      const result = hyphenate(html, {
+        languagePack: englishLanguagePack,
+        encoding: 'html',
+        htmlMode: true,
+      });
+
+      expect(result.output).toContain('<p>');
+      expect(result.output).toContain('</p>');
+      expect(result.output).toContain('<strong>');
+      expect(result.output).toContain('</strong>');
+    });
+
+    it('should NOT hyphenate text inside <a> tags', () => {
+      const html = '<p>This is <a href="https://example.com">Ladungssicherung</a> and more text</p>';
       const result = hyphenate(html, {
         languagePack: germanLanguagePack,
         encoding: 'html',
@@ -173,7 +187,13 @@ describe('Hyphenation Engine', () => {
 
       expect(result.output).toContain('<a href="https://example.com">');
       expect(result.output).toContain('</a>');
-      // Text node should be hyphenated
+
+      // Link text should NOT be hyphenated
+      const linkContent = result.output.match(/<a[^>]*>(.*?)<\/a>/)?.[1] || '';
+      expect(linkContent).toBe('Ladungssicherung');
+      expect(linkContent).not.toContain('&shy;');
+
+      // But text outside links should be hyphenated
       expect(result.output).toContain('&shy;');
     });
   });

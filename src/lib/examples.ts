@@ -37,7 +37,8 @@ export const GERMAN_HTML_EXAMPLE: ExampleText = {
   title: 'HTML-Beispiel (DE)',
   text: `<h2>Produktinformationen</h2>
 <p>Die <strong>Ladungssicherung</strong> ist für den <em>professionellen Transport</em> unerlässlich. Unsere Zurrgurte mit <code>ISO-9001</code> Zertifizierung bieten höchste Qualitätsstandards.</p>
-<p>Besuchen Sie unsere Website unter <a href="https://www.example.com">www.example.com</a> für weitere Informationen.</p>`,
+<p>Besuchen Sie unsere Website unter <a href="https://www.example.com">www.example.com</a> für weitere Informationen. Die <a href="/produkte/zurrgurte">Zurrgurte</a> sind in verschiedenen Ausführungen erhältlich.</p>
+<p>Kontaktieren Sie uns unter <a href="mailto:info@example.com">info@example.com</a> für individuelle Beratung.</p>`,
 };
 
 export const ENGLISH_HTML_EXAMPLE: ExampleText = {

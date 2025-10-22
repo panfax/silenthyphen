@@ -170,7 +170,7 @@ function hyphenateHtml(
   let wordsProcessed = 0;
   let hyphensInserted = 0;
 
-  // Process only text tokens
+  // Process text tokens, but skip content inside <a> tags
   const processedTokens = htmlTokens.map((token) => {
     if (token.type === 'text') {
       // Tokenize text content
@@ -201,6 +201,7 @@ function hyphenateHtml(
 
       return { ...token, value: hyphenatedText };
     }
+    // Skip tokens (e.g., content inside <a> tags) are preserved as-is
     return token;
   });
 
