@@ -1,0 +1,9 @@
+  For future updates, just follow the workflow:
+  1. Make changes locally
+  2. git push
+  3. SSH to server and run:
+  cd /var/www/silenthyphen
+  sudo git pull
+  sudo npm install
+  sudo npm run build
+  sudo systemctl reload nginx

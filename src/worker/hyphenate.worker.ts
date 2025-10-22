@@ -53,6 +53,10 @@ self.onmessage = (e: MessageEvent<WorkerRequest>) => {
       id,
       result: {
         output: text, // Return original text on error
+        input: text,
+        language: languageId,
+        htmlMode,
+        encoding,
         wordsProcessed: 0,
         hyphensInserted: 0,
         processingTime: 0,

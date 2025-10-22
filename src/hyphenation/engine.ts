@@ -29,6 +29,18 @@ export interface HyphenationResult {
   /** Processed text with soft hyphens */
   output: string;
 
+  /** Original input text */
+  input: string;
+
+  /** Language ID used */
+  language: string;
+
+  /** HTML mode enabled */
+  htmlMode: boolean;
+
+  /** Encoding type used */
+  encoding: OutputEncoding;
+
   /** Number of words processed */
   wordsProcessed: number;
 
@@ -226,6 +238,10 @@ export function hyphenate(text: string, options: HyphenationOptions): Hyphenatio
 
   return {
     output,
+    input: text,
+    language: options.languagePack.id,
+    htmlMode: options.htmlMode,
+    encoding: options.encoding,
     wordsProcessed,
     hyphensInserted,
     processingTime,

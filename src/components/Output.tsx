@@ -3,6 +3,7 @@ import { FileOutput, Copy, Download, CheckCheck } from 'lucide-react';
 import { Button } from './ui/button';
 import { Label } from './ui/label';
 import { useApp } from '../context/AppContext';
+import { analytics } from '../lib/analytics';
 
 export function Output() {
   const { outputText, stats } = useApp();
@@ -14,6 +15,7 @@ export function Output() {
       await navigator.clipboard.writeText(outputText);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
+      analytics.trackCopy();
     } catch (error) {
       console.error('Failed to copy:', error);
     }
@@ -30,6 +32,7 @@ export function Output() {
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
+    analytics.trackDownload('txt');
   };
 
   // Download as .html
@@ -68,6 +71,7 @@ export function Output() {
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
+    analytics.trackDownload('html');
   };
 
   return (

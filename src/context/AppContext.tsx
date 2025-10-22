@@ -3,6 +3,7 @@ import type { HyphenationResult } from '../hyphenation/engine';
 import type { WorkerRequest, WorkerResponse } from '../worker/hyphenate.worker';
 import { loadSettings, saveSettings, type UserSettings } from '../lib/storage';
 import { detectLanguage } from '../lib/langDetect';
+import { analytics } from '../lib/analytics';
 
 interface AppContextType {
   // Input text
@@ -59,6 +60,19 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       setOutputText(result.output);
       setStats(result);
       setIsProcessing(false);
+
+      // Track hyphenation event
+      if (result && !error) {
+        analytics.trackHyphenation({
+          language: result.language,
+          textLength: result.input.length,
+          htmlMode: result.htmlMode,
+          encoding: result.encoding,
+          wordsProcessed: result.wordsProcessed,
+          hyphensInserted: result.hyphensInserted,
+          processingTime: result.processingTime,
+        });
+      }
     };
 
     return () => {
