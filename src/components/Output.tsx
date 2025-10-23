@@ -144,13 +144,8 @@ export function Output() {
       <div className="px-4 py-2 border-t bg-muted/20 text-xs">
         {stats ? (
           <div className="flex flex-col gap-0.5">
-            <div className="flex items-center gap-4">
-              <span className="stat">
-                <span className="stat-value">{stats.wordsProcessed}</span> words processed
-              </span>
-              <span className="stat">
-                <span className="stat-value">{stats.hyphensInserted}</span> hyphens inserted
-              </span>
+            <div className="text-muted-foreground">
+              {stats.wordsProcessed} words • {stats.hyphensInserted} hyphens
             </div>
             <div className="text-muted-foreground/60">
               Processing time: {stats.processingTime}ms
