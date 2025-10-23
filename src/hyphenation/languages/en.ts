@@ -12,12 +12,29 @@ export const englishLanguagePack: LanguagePack = {
 
   /**
    * English-specific post-processing
-   * - LogicLine: Always hyphenate as Logic-Line (company name)
+   * - Company/Product names: Always hyphenate at specific points
    */
   postProcess: (word: string, _hyphenated: string): string => {
-    // Special case: LogicLine (company name) - always hyphenate as Logic-Line
-    if (/^logicline$/i.test(word)) {
-      return 'Logic\u00ADLine';
+    // Special cases: Company and product names with fixed hyphenation
+    const specialCases: Record<string, string> = {
+      'logicline': 'Logic\u00ADLine',
+      'frontrack': 'Front\u00ADRack',
+      'combirack': 'Combi\u00ADRack',
+      'powerrack': 'Power\u00ADRack',
+      'heckrack': 'Heck\u00ADRack',
+      'ecocover': 'Eco\u00ADCover',
+      'basiccover': 'Basic\u00ADCover',
+      'combicover': 'Combi\u00ADCover',
+      'basicbox': 'Basic\u00ADBox',
+      'combibox': 'Combi\u00ADBox',
+      'toolbox': 'Tool\u00ADBox',
+      'roadbox': 'Road\u00ADBox',
+      'longbox': 'Long\u00ADBox',
+    };
+
+    const lowerWord = word.toLowerCase();
+    if (specialCases[lowerWord]) {
+      return specialCases[lowerWord];
     }
 
     // No other post-processing for English
