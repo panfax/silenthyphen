@@ -3,6 +3,7 @@ import { Plus, Trash2, Edit2, Save, X } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
+import { HyphenationBuilder } from '../components/HyphenationBuilder';
 
 interface CustomRule {
   id: number;
@@ -268,35 +269,17 @@ export function CustomRules() {
               <Input
                 id="new-word"
                 value={newRule.word}
-                onChange={(e) => setNewRule({ ...newRule, word: e.target.value })}
+                onChange={(e) => setNewRule({ ...newRule, word: e.target.value, hyphenated: '' })}
                 placeholder="e.g., LogicLine"
+                className="text-lg"
               />
             </div>
-            <div>
-              <Label htmlFor="new-hyphenated">Hyphenation Pattern (use | to mark break points)</Label>
-              <Input
-                id="new-hyphenated"
-                value={newRule.hyphenated.replace(/\u00AD/g, '|')}
-                onChange={(e) => setNewRule({
-                  ...newRule,
-                  hyphenated: e.target.value.replace(/\|/g, '\u00AD')
-                })}
-                placeholder="e.g., Logic|Line or Front|Rack"
-                className="font-mono"
-              />
-              <div className="flex items-center gap-2 mt-2 text-xs">
-                <span className="text-muted-foreground">Preview:</span>
-                <span className="font-mono" dangerouslySetInnerHTML={{
-                  __html: newRule.hyphenated.replace(/\u00AD/g, '<span class="bg-yellow-200 dark:bg-yellow-800 px-0.5 font-bold">|</span>')
-                }} />
-                {newRule.hyphenated && (
-                  <span className="text-green-600 dark:text-green-400">✓ Ready</span>
-                )}
-              </div>
-              <p className="text-xs text-muted-foreground mt-1">
-                Type the word and use the <span className="font-mono bg-muted px-1 rounded">|</span> pipe character to mark where it should break
-              </p>
-            </div>
+
+            <HyphenationBuilder
+              word={newRule.word}
+              onPatternChange={(pattern) => setNewRule({ ...newRule, hyphenated: pattern })}
+              initialPattern={newRule.hyphenated}
+            />
           </div>
           <Button onClick={handleAdd} className="w-full sm:w-auto">
             <Plus className="h-4 w-4 mr-2" />
@@ -335,24 +318,13 @@ export function CustomRules() {
                           placeholder="Word"
                         />
                       </div>
-                      <div>
-                        <Label htmlFor={`edit-hyphenated-${rule.id}`} className="text-xs">Pattern (use | for breaks)</Label>
-                        <Input
-                          id={`edit-hyphenated-${rule.id}`}
-                          value={editForm.hyphenated.replace(/\u00AD/g, '|')}
-                          onChange={(e) => setEditForm({
-                            ...editForm,
-                            hyphenated: e.target.value.replace(/\|/g, '\u00AD')
-                          })}
-                          placeholder="Logic|Line"
-                          className="font-mono"
-                        />
-                        <p className="text-xs text-muted-foreground mt-1">
-                          Preview: <span dangerouslySetInnerHTML={{
-                            __html: editForm.hyphenated.replace(/\u00AD/g, '<span class="bg-yellow-200 dark:bg-yellow-800 px-0.5 font-bold">|</span>')
-                          }} />
-                        </p>
-                      </div>
+
+                      <HyphenationBuilder
+                        word={editForm.word}
+                        onPatternChange={(pattern) => setEditForm({ ...editForm, hyphenated: pattern })}
+                        initialPattern={editForm.hyphenated}
+                      />
+
                       <div className="flex gap-2">
                         <Button
                           size="sm"
