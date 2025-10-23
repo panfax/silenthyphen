@@ -98,8 +98,15 @@ export function Editor() {
       </div>
 
       {/* Stats */}
-      <div className="px-4 py-2 border-t bg-muted/20 text-xs text-muted-foreground">
-        {charCount} characters
+      <div className="px-4 py-2 border-t bg-muted/20 text-xs">
+        <div className="flex flex-col gap-0.5">
+          <div className="text-muted-foreground">
+            {charCount} characters
+          </div>
+          <div className="text-muted-foreground/60">
+            {charCount === 0 ? 'Paste or type text to begin' : 'Ready for processing'}
+          </div>
+        </div>
       </div>
     </div>
   );

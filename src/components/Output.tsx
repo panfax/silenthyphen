@@ -143,19 +143,24 @@ export function Output() {
       {/* Stats */}
       <div className="px-4 py-2 border-t bg-muted/20 text-xs">
         {stats ? (
-          <div className="flex items-center gap-4">
-            <span className="stat">
-              <span className="stat-value">{stats.wordsProcessed}</span> words processed
-            </span>
-            <span className="stat">
-              <span className="stat-value">{stats.hyphensInserted}</span> hyphens inserted
-            </span>
-            <span className="stat">
-              <span className="stat-value">{stats.processingTime}ms</span> processing time
-            </span>
+          <div className="flex flex-col gap-0.5">
+            <div className="flex items-center gap-4">
+              <span className="stat">
+                <span className="stat-value">{stats.wordsProcessed}</span> words processed
+              </span>
+              <span className="stat">
+                <span className="stat-value">{stats.hyphensInserted}</span> hyphens inserted
+              </span>
+            </div>
+            <div className="text-muted-foreground/60">
+              Processing time: {stats.processingTime}ms
+            </div>
           </div>
         ) : (
-          <span className="text-muted-foreground">No output yet</span>
+          <div className="flex flex-col gap-0.5">
+            <div className="text-muted-foreground">No output yet</div>
+            <div className="text-muted-foreground/60">Results will appear after processing</div>
+          </div>
         )}
       </div>
     </div>

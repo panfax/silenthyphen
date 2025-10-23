@@ -142,8 +142,18 @@ export function Preview() {
       </div>
 
       {/* Bottom bar - matches Editor and Output */}
-      <div className="px-4 py-2 border-t bg-muted/20 text-xs text-muted-foreground">
-        {outputText ? 'Live preview with CSS controls' : 'Preview area'}
+      <div className="px-4 py-2 border-t bg-muted/20 text-xs">
+        {outputText ? (
+          <div className="flex flex-col gap-0.5">
+            <div className="text-muted-foreground">Live preview</div>
+            <div className="text-muted-foreground/60">Adjust CSS controls to test rendering</div>
+          </div>
+        ) : (
+          <div className="flex flex-col gap-0.5">
+            <div className="text-muted-foreground">Preview area</div>
+            <div className="text-muted-foreground/60">Results will render here</div>
+          </div>
+        )}
       </div>
     </div>
   );
