@@ -201,12 +201,18 @@ export function CustomRules() {
               Manage words with fixed hyphenation points
             </p>
           </div>
-          <Button variant="ghost" onClick={() => {
-            setIsAuthenticated(false);
-            sessionStorage.removeItem('admin_password');
-          }}>
-            Logout
-          </Button>
+          <div className="flex gap-2">
+            <Button variant="outline" size="sm" onClick={() => window.location.href = '/admin/analytics'}>
+              Analytics
+            </Button>
+            <Button variant="ghost" size="sm" onClick={() => {
+              setIsAuthenticated(false);
+              sessionStorage.removeItem('admin_password');
+              window.location.href = '/';
+            }}>
+              Logout
+            </Button>
+          </div>
         </div>
 
         {error && (
@@ -217,7 +223,30 @@ export function CustomRules() {
 
         {/* Add New Rule */}
         <div className="bg-card border rounded-lg p-6 space-y-4">
-          <h2 className="text-lg font-semibold">Add New Rule</h2>
+          <div>
+            <h2 className="text-lg font-semibold">Add New Rule</h2>
+            <p className="text-sm text-muted-foreground mt-1">
+              Define custom hyphenation points for specific words (product names, brand names, etc.)
+            </p>
+          </div>
+
+          {/* Helper Text */}
+          <div className="bg-muted/50 rounded-lg p-4 text-sm space-y-2">
+            <p className="font-medium">How to use:</p>
+            <ul className="list-disc list-inside space-y-1 text-muted-foreground">
+              <li><strong>Word:</strong> Enter the word exactly as it appears (case-insensitive)</li>
+              <li><strong>Hyphenated Form:</strong> Use <code className="bg-background px-1 py-0.5 rounded">&amp;shy;</code> or direct soft hyphen (­) to mark break points</li>
+            </ul>
+            <div className="pt-2 border-t border-border mt-3">
+              <p className="font-medium mb-1">Examples:</p>
+              <div className="space-y-1 font-mono text-xs">
+                <div>LogicLine → Logic<span className="text-primary">­</span>Line</div>
+                <div>FrontRack → Front<span className="text-primary">­</span>Rack</div>
+                <div>PowerStation → Power<span className="text-primary">­</span>Station</div>
+              </div>
+            </div>
+          </div>
+
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <Label htmlFor="new-word">Word</Label>
@@ -234,7 +263,7 @@ export function CustomRules() {
                 id="new-hyphenated"
                 value={newRule.hyphenated}
                 onChange={(e) => setNewRule({ ...newRule, hyphenated: e.target.value })}
-                placeholder="e.g., Logic&shy;Line"
+                placeholder="e.g., Logic&shy;Line or Logic­Line"
               />
             </div>
           </div>

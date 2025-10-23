@@ -146,16 +146,26 @@ export function Admin() {
             <BarChart3 className="h-6 w-6 text-primary" />
             <h1 className="text-2xl font-bold">SilentHyphen Analytics</h1>
           </div>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => {
-              setIsAuthenticated(false);
-              sessionStorage.removeItem('admin_password');
-            }}
-          >
-            Logout
-          </Button>
+          <div className="flex gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => window.location.href = '/admin/custom-rules'}
+            >
+              Custom Rules
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => {
+                setIsAuthenticated(false);
+                sessionStorage.removeItem('admin_password');
+                window.location.href = '/';
+              }}
+            >
+              Logout
+            </Button>
+          </div>
         </div>
       </header>
 

@@ -11,8 +11,10 @@ createRoot(document.getElementById('root')!).render(
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<App />} />
-        <Route path="/admin" element={<Admin />} />
+        <Route path="/admin/analytics" element={<Admin />} />
         <Route path="/admin/custom-rules" element={<CustomRules />} />
+        {/* Redirect /admin to /admin/custom-rules */}
+        <Route path="/admin" element={<CustomRules />} />
       </Routes>
     </BrowserRouter>
   </StrictMode>
