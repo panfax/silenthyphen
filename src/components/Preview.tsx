@@ -43,19 +43,18 @@ export function Preview() {
   return (
     <div className="flex flex-col h-full bg-card border">
       {/* Toolbar */}
-      <div className="flex flex-col justify-center gap-2 px-4 py-2 border-b bg-muted/30">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Eye className="h-4 w-4 text-muted-foreground" />
-            <Label className="text-sm font-semibold">Preview</Label>
-          </div>
+      <div className="flex items-center justify-between px-4 border-b bg-muted/30 h-[60px]">
+        <div className="flex items-center gap-3">
+          <Eye className="h-4 w-4 text-muted-foreground" />
+          <Label className="text-sm font-semibold">Preview</Label>
 
-          {/* Reveal hyphens toggle */}
-          <div className="flex items-center gap-2">
+          {/* Reveal hyphens toggle - compact */}
+          <div className="flex items-center gap-1.5 ml-2">
             <Switch
               id="reveal-hyphens"
               checked={settings.revealHyphens}
               onCheckedChange={(checked) => updateSetting('revealHyphens', checked)}
+              className="scale-90"
             />
             <Label htmlFor="reveal-hyphens" className="text-xs cursor-pointer flex items-center gap-1">
               {settings.revealHyphens ? (
@@ -66,28 +65,28 @@ export function Preview() {
               ) : (
                 <>
                   <EyeOff className="h-3 w-3" />
-                  Hyphens hidden
+                  Hidden
                 </>
               )}
             </Label>
           </div>
         </div>
 
-        {/* CSS Controls */}
-        <div className="flex items-center gap-3 text-xs">
+        {/* CSS Controls - compact */}
+        <div className="flex items-center gap-2 text-xs">
           {/* hyphens property */}
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
-                <div className="flex items-center gap-1">
-                  <Label className="text-muted-foreground cursor-help">hyphens:</Label>
+                <div className="flex items-center gap-0.5">
+                  <Label className="text-muted-foreground cursor-help text-[10px]">hyphens:</Label>
                   <Select
                     value={settings.previewHyphens}
                     onValueChange={(value) =>
                       updateSetting('previewHyphens', value as 'auto' | 'manual')
                     }
                   >
-                    <SelectTrigger className="h-7 w-[90px] text-xs">
+                    <SelectTrigger className="h-6 w-[70px] text-[10px] px-2">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -109,15 +108,15 @@ export function Preview() {
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
-                <div className="flex items-center gap-1">
-                  <Label className="text-muted-foreground cursor-help">overflow-wrap:</Label>
+                <div className="flex items-center gap-0.5">
+                  <Label className="text-muted-foreground cursor-help text-[10px]">overflow:</Label>
                   <Select
                     value={settings.previewOverflowWrap}
                     onValueChange={(value) =>
                       updateSetting('previewOverflowWrap', value as 'normal' | 'anywhere')
                     }
                   >
-                    <SelectTrigger className="h-7 w-[100px] text-xs">
+                    <SelectTrigger className="h-6 w-[80px] text-[10px] px-2">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
