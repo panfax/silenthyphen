@@ -239,11 +239,26 @@ export function CustomRules() {
             </ul>
             <div className="pt-2 border-t border-border mt-3">
               <p className="font-medium mb-1">Examples:</p>
-              <div className="space-y-1 font-mono text-xs">
-                <div>LogicLine → Logic<span className="text-primary">­</span>Line</div>
-                <div>FrontRack → Front<span className="text-primary">­</span>Rack</div>
-                <div>PowerStation → Power<span className="text-primary">­</span>Station</div>
+              <div className="space-y-2 text-xs">
+                <div className="flex items-center gap-2">
+                  <span className="font-mono">LogicLine</span>
+                  <span className="text-muted-foreground">→</span>
+                  <span className="font-mono">Logic<span className="bg-yellow-200 dark:bg-yellow-800 px-0.5 font-bold">|</span>Line</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="font-mono">FrontRack</span>
+                  <span className="text-muted-foreground">→</span>
+                  <span className="font-mono">Front<span className="bg-yellow-200 dark:bg-yellow-800 px-0.5 font-bold">|</span>Rack</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="font-mono">PowerStation</span>
+                  <span className="text-muted-foreground">→</span>
+                  <span className="font-mono">Power<span className="bg-yellow-200 dark:bg-yellow-800 px-0.5 font-bold">|</span>Station</span>
+                </div>
               </div>
+              <p className="text-xs text-muted-foreground mt-2">
+                <span className="bg-yellow-200 dark:bg-yellow-800 px-1 py-0.5 rounded font-mono font-bold">|</span> = soft hyphen position (invisible in normal text, appears as "-" when word breaks at line end)
+              </p>
             </div>
           </div>
 
