@@ -80,6 +80,7 @@ export function CustomRules() {
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     fetchRules();
+    fetchExclusions();
   };
 
   const handleAdd = async () => {
