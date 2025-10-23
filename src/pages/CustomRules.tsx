@@ -342,7 +342,11 @@ export function CustomRules() {
                     <div className="flex items-center justify-between">
                       <div>
                         <div className="font-mono text-sm">
-                          {rule.word} → <span dangerouslySetInnerHTML={{ __html: rule.hyphenated.replace(/\u00AD/g, '&shy;') }} />
+                          <span className="text-muted-foreground">{rule.word}</span>
+                          {' → '}
+                          <span dangerouslySetInnerHTML={{
+                            __html: rule.hyphenated.replace(/\u00AD/g, '<span class="bg-yellow-200 dark:bg-yellow-800 px-0.5 font-bold">|</span>')
+                          }} />
                         </div>
                       </div>
                       <div className="flex gap-2">
