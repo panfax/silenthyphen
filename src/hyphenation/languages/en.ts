@@ -7,7 +7,7 @@ import enPatterns from 'hyphenation.en-us';
 export const englishLanguagePack: LanguagePack = {
   id: 'en',
   displayName: 'English',
-  minWordLength: 4,
+  minWordLength: 6,
   patterns: enPatterns,
 
   /**
@@ -15,7 +15,7 @@ export const englishLanguagePack: LanguagePack = {
    */
   shouldSkip: (word: string): boolean => {
     // Skip very short words
-    if (word.length < 4) return true;
+    if (word.length < 6) return true;
 
     // Skip words that are just numbers
     if (/^\d+$/.test(word)) return true;
