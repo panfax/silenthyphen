@@ -273,16 +273,16 @@ export function CustomRules() {
               />
             </div>
             <div>
-              <Label htmlFor="new-hyphenated">Hyphenated Form (use ­ between parts)</Label>
+              <Label htmlFor="new-hyphenated">Hyphenated Form</Label>
               <Input
                 id="new-hyphenated"
                 value={newRule.hyphenated}
                 onChange={(e) => setNewRule({ ...newRule, hyphenated: e.target.value })}
-                placeholder="Logic­Line (type: Logic + soft hyphen + Line)"
+                placeholder="Type: Logic­Line (­ = soft hyphen)"
                 className="font-mono"
               />
               <p className="text-xs text-muted-foreground mt-1">
-                Tip: Type the word with visible soft hyphens (­) or use &amp;shy; HTML entity
+                💡 Copy this soft hyphen and paste it where you want breaks: <span className="bg-yellow-200 dark:bg-yellow-800 px-2 py-0.5 rounded font-mono font-bold select-all cursor-pointer">­</span>
               </p>
             </div>
           </div>
@@ -329,13 +329,13 @@ export function CustomRules() {
                           id={`edit-hyphenated-${rule.id}`}
                           value={editForm.hyphenated.replace(/\u00AD/g, '­')}
                           onChange={(e) => setEditForm({ ...editForm, hyphenated: e.target.value })}
-                          placeholder="Logic­Line (use ­ or &shy;)"
+                          placeholder="Logic­Line"
                           className="font-mono"
                         />
                         <p className="text-xs text-muted-foreground mt-1">
-                          Current: <span dangerouslySetInnerHTML={{
+                          Preview: <span dangerouslySetInnerHTML={{
                             __html: editForm.hyphenated.replace(/\u00AD/g, '<span class="bg-yellow-200 dark:bg-yellow-800 px-0.5 font-bold">|</span>')
-                          }} />
+                          }} /> • Copy ­ to add breaks
                         </p>
                       </div>
                       <div className="flex gap-2 sm:col-span-2">
