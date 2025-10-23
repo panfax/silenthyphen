@@ -12,10 +12,16 @@ export const germanLanguagePack: LanguagePack = {
 
   /**
    * German-specific post-processing
+   * - LogicLine: Always hyphenate as Logic-Line (company name)
    * - Convert c-k to k-k (Zucker → Zuk-ker)
    * - Avoid splitting digraphs (ch, sch, ph, qu)
    */
-  postProcess: (_word: string, hyphenated: string): string => {
+  postProcess: (word: string, hyphenated: string): string => {
+    // Special case: LogicLine (company name) - always hyphenate as Logic-Line
+    if (/^logicline$/i.test(word)) {
+      return 'Logic\u00ADLine';
+    }
+
     // Replace c-k with k-k (German ck rule)
     let result = hyphenated.replace(/c\u00ADk/gi, 'k\u00ADk');
 

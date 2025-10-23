@@ -11,6 +11,20 @@ export const englishLanguagePack: LanguagePack = {
   patterns: enPatterns,
 
   /**
+   * English-specific post-processing
+   * - LogicLine: Always hyphenate as Logic-Line (company name)
+   */
+  postProcess: (word: string, _hyphenated: string): string => {
+    // Special case: LogicLine (company name) - always hyphenate as Logic-Line
+    if (/^logicline$/i.test(word)) {
+      return 'Logic\u00ADLine';
+    }
+
+    // No other post-processing for English
+    return _hyphenated;
+  },
+
+  /**
    * English-specific skip rules
    */
   shouldSkip: (word: string): boolean => {
