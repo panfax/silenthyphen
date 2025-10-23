@@ -51,6 +51,16 @@ async function initDatabase() {
     CREATE INDEX IF NOT EXISTS idx_timestamp ON events(timestamp);
     CREATE INDEX IF NOT EXISTS idx_type ON events(type);
     CREATE INDEX IF NOT EXISTS idx_session_id ON events(session_id);
+
+    CREATE TABLE IF NOT EXISTS custom_hyphenation_rules (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      word TEXT NOT NULL UNIQUE,
+      hyphenated TEXT NOT NULL,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    );
+
+    CREATE INDEX IF NOT EXISTS idx_word ON custom_hyphenation_rules(word);
   `);
 
   console.log('Database initialized');
@@ -232,6 +242,97 @@ app.get('/api/admin/recent', requireAuth, async (req, res) => {
   } catch (error) {
     console.error('Error fetching recent events:', error);
     res.status(500).json({ error: 'Failed to fetch events' });
+  }
+});
+
+// Custom Hyphenation Rules API
+
+// GET /api/custom-rules - Get all custom hyphenation rules (public)
+app.get('/api/custom-rules', async (req, res) => {
+  try {
+    const rules = await db.all(
+      'SELECT id, word, hyphenated FROM custom_hyphenation_rules ORDER BY word ASC'
+    );
+    res.json({ rules });
+  } catch (error) {
+    console.error('Error fetching custom rules:', error);
+    res.status(500).json({ error: 'Failed to fetch custom rules' });
+  }
+});
+
+// GET /api/admin/custom-rules - Get all custom rules with timestamps (admin)
+app.get('/api/admin/custom-rules', requireAuth, async (req, res) => {
+  try {
+    const rules = await db.all(
+      'SELECT * FROM custom_hyphenation_rules ORDER BY word ASC'
+    );
+    res.json({ rules });
+  } catch (error) {
+    console.error('Error fetching custom rules:', error);
+    res.status(500).json({ error: 'Failed to fetch custom rules' });
+  }
+});
+
+// POST /api/admin/custom-rules - Add new custom rule
+app.post('/api/admin/custom-rules', requireAuth, async (req, res) => {
+  try {
+    const { word, hyphenated } = req.body;
+
+    if (!word || !hyphenated) {
+      return res.status(400).json({ error: 'Word and hyphenated form are required' });
+    }
+
+    await db.run(
+      'INSERT INTO custom_hyphenation_rules (word, hyphenated) VALUES (?, ?)',
+      [word.toLowerCase(), hyphenated]
+    );
+
+    res.json({ success: true });
+  } catch (error: any) {
+    if (error.code === 'SQLITE_CONSTRAINT') {
+      return res.status(409).json({ error: 'Rule for this word already exists' });
+    }
+    console.error('Error adding custom rule:', error);
+    res.status(500).json({ error: 'Failed to add custom rule' });
+  }
+});
+
+// PUT /api/admin/custom-rules/:id - Update custom rule
+app.put('/api/admin/custom-rules/:id', requireAuth, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { word, hyphenated } = req.body;
+
+    if (!word || !hyphenated) {
+      return res.status(400).json({ error: 'Word and hyphenated form are required' });
+    }
+
+    await db.run(
+      'UPDATE custom_hyphenation_rules SET word = ?, hyphenated = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?',
+      [word.toLowerCase(), hyphenated, id]
+    );
+
+    res.json({ success: true });
+  } catch (error: any) {
+    if (error.code === 'SQLITE_CONSTRAINT') {
+      return res.status(409).json({ error: 'Rule for this word already exists' });
+    }
+    console.error('Error updating custom rule:', error);
+    res.status(500).json({ error: 'Failed to update custom rule' });
+  }
+});
+
+// DELETE /api/admin/custom-rules/:id - Delete custom rule
+app.delete('/api/admin/custom-rules/:id', requireAuth, async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    await db.run('DELETE FROM custom_hyphenation_rules WHERE id = ?', [id]);
+
+    res.json({ success: true });
+  } catch (error) {
+    console.error('Error deleting custom rule:', error);
+    res.status(500).json({ error: 'Failed to delete custom rule' });
   }
 });
 
