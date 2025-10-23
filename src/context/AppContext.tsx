@@ -4,6 +4,7 @@ import type { WorkerRequest, WorkerResponse } from '../worker/hyphenate.worker';
 import { loadSettings, saveSettings, type UserSettings } from '../lib/storage';
 import { detectLanguage } from '../lib/langDetect';
 import { analytics } from '../lib/analytics';
+import { fetchCustomRules } from '../lib/customRules';
 
 interface AppContextType {
   // Input text
@@ -43,7 +44,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const workerRef = useRef<Worker | null>(null);
   const requestIdRef = useRef(0);
 
-  // Initialize worker
+  // Initialize worker and fetch custom rules
   useEffect(() => {
     workerRef.current = new Worker(
       new URL('../worker/hyphenate.worker.ts', import.meta.url),
@@ -74,6 +75,11 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         });
       }
     };
+
+    // Fetch custom hyphenation rules on app load
+    fetchCustomRules().catch((error) => {
+      console.error('Failed to load custom rules:', error);
+    });
 
     return () => {
       workerRef.current?.terminate();

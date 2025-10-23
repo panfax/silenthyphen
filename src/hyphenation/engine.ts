@@ -2,6 +2,7 @@ import Hypher from 'hypher';
 import type { LanguagePack } from './LanguagePack';
 import { tokenize, detokenize, shouldProtect, hasExistingHyphen } from './guards';
 import { parseHtml, reconstructHtml, isHtml } from './sanitize';
+import { getCustomHyphenation } from '../lib/customRules';
 
 /**
  * Output encoding type
@@ -76,6 +77,12 @@ function hyphenateWord(
   const leading = leadingMatch ? leadingMatch[0] : '';
   const trailing = trailingMatch ? trailingMatch[0] : '';
   const coreWord = word.slice(leading.length, word.length - trailing.length);
+
+  // Check for custom hyphenation rule first (highest priority)
+  const customHyphenation = getCustomHyphenation(coreWord);
+  if (customHyphenation) {
+    return leading + customHyphenation + trailing;
+  }
 
   // Skip if core word is too short
   if (coreWord.length < languagePack.minWordLength) {
