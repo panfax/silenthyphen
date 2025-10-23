@@ -5,6 +5,7 @@ import { loadSettings, saveSettings, type UserSettings } from '../lib/storage';
 import { detectLanguage } from '../lib/langDetect';
 import { analytics } from '../lib/analytics';
 import { fetchCustomRules } from '../lib/customRules';
+import { fetchExclusionRules } from '../lib/exclusionRules';
 
 interface AppContextType {
   // Input text
@@ -76,9 +77,13 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       }
     };
 
-    // Fetch custom hyphenation rules on app load
+    // Fetch custom hyphenation rules and exclusion list on app load
     fetchCustomRules().catch((error) => {
       console.error('Failed to load custom rules:', error);
+    });
+
+    fetchExclusionRules().catch((error) => {
+      console.error('Failed to load exclusion rules:', error);
     });
 
     return () => {

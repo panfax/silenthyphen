@@ -61,6 +61,14 @@ async function initDatabase() {
     );
 
     CREATE INDEX IF NOT EXISTS idx_word ON custom_hyphenation_rules(word);
+
+    CREATE TABLE IF NOT EXISTS exclusion_rules (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      word TEXT NOT NULL UNIQUE,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    );
+
+    CREATE INDEX IF NOT EXISTS idx_exclusion_word ON exclusion_rules(word);
   `);
 
   console.log('Database initialized');
@@ -248,7 +256,7 @@ app.get('/api/admin/recent', requireAuth, async (req, res) => {
 // Custom Hyphenation Rules API
 
 // GET /api/custom-rules - Get all custom hyphenation rules (public)
-app.get('/api/custom-rules', async (req, res) => {
+app.get('/api/custom-rules', async (_req, res) => {
   try {
     const rules = await db.all(
       'SELECT id, word, hyphenated FROM custom_hyphenation_rules ORDER BY word ASC'
@@ -261,7 +269,7 @@ app.get('/api/custom-rules', async (req, res) => {
 });
 
 // GET /api/admin/custom-rules - Get all custom rules with timestamps (admin)
-app.get('/api/admin/custom-rules', requireAuth, async (req, res) => {
+app.get('/api/admin/custom-rules', requireAuth, async (_req, res) => {
   try {
     const rules = await db.all(
       'SELECT * FROM custom_hyphenation_rules ORDER BY word ASC'
@@ -333,6 +341,116 @@ app.delete('/api/admin/custom-rules/:id', requireAuth, async (req, res) => {
   } catch (error) {
     console.error('Error deleting custom rule:', error);
     res.status(500).json({ error: 'Failed to delete custom rule' });
+  }
+});
+
+// Exclusion Rules API (Never Hyphenate)
+
+// GET /api/exclusion-rules - Get all exclusion rules (public)
+app.get('/api/exclusion-rules', async (_req, res) => {
+  try {
+    const rules = await db.all(
+      'SELECT id, word FROM exclusion_rules ORDER BY word ASC'
+    );
+    res.json({ rules });
+  } catch (error) {
+    console.error('Error fetching exclusion rules:', error);
+    res.status(500).json({ error: 'Failed to fetch exclusion rules' });
+  }
+});
+
+// GET /api/admin/exclusion-rules - Get all exclusion rules with timestamps (admin)
+app.get('/api/admin/exclusion-rules', requireAuth, async (_req, res) => {
+  try {
+    const rules = await db.all(
+      'SELECT * FROM exclusion_rules ORDER BY word ASC'
+    );
+    res.json({ rules });
+  } catch (error) {
+    console.error('Error fetching exclusion rules:', error);
+    res.status(500).json({ error: 'Failed to fetch exclusion rules' });
+  }
+});
+
+// POST /api/admin/exclusion-rules - Add new exclusion rule
+app.post('/api/admin/exclusion-rules', requireAuth, async (req, res) => {
+  try {
+    const { word } = req.body;
+
+    if (!word) {
+      return res.status(400).json({ error: 'Word is required' });
+    }
+
+    await db.run(
+      'INSERT INTO exclusion_rules (word) VALUES (?)',
+      [word.toLowerCase()]
+    );
+
+    res.json({ success: true });
+  } catch (error: any) {
+    if (error.code === 'SQLITE_CONSTRAINT') {
+      return res.status(409).json({ error: 'This word is already excluded' });
+    }
+    console.error('Error adding exclusion rule:', error);
+    res.status(500).json({ error: 'Failed to add exclusion rule' });
+  }
+});
+
+// POST /api/admin/exclusion-rules/bulk - Add multiple exclusion rules at once
+app.post('/api/admin/exclusion-rules/bulk', requireAuth, async (req, res) => {
+  try {
+    const { words } = req.body;
+
+    if (!words || !Array.isArray(words)) {
+      return res.status(400).json({ error: 'Words array is required' });
+    }
+
+    const results: {
+      added: number;
+      duplicates: number;
+      errors: string[];
+    } = {
+      added: 0,
+      duplicates: 0,
+      errors: []
+    };
+
+    for (const word of words) {
+      if (!word || word.trim() === '') continue;
+
+      try {
+        await db.run(
+          'INSERT INTO exclusion_rules (word) VALUES (?)',
+          [word.toLowerCase().trim()]
+        );
+        results.added++;
+      } catch (error: any) {
+        if (error.code === 'SQLITE_CONSTRAINT') {
+          results.duplicates++;
+        } else {
+          results.errors.push(`Failed to add: ${word}`);
+        }
+      }
+    }
+
+    res.json({ success: true, results });
+  } catch (error) {
+    console.error('Error adding bulk exclusion rules:', error);
+    res.status(500).json({ error: 'Failed to add exclusion rules' });
+  }
+});
+
+// DELETE /api/admin/exclusion-rules/:id - Delete exclusion rule
+app.delete('/api/admin/exclusion-rules/:id', requireAuth, async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    await db.run('DELETE FROM exclusion_rules WHERE id = ?', [id]);
+
+    res.json({ success: true });
+  } catch (error) {
+    console.error('Error deleting exclusion rule:', error);
+    res.status(500).json({ error: 'Failed to delete exclusion rule' });
   }
 });
 

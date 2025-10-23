@@ -3,6 +3,7 @@ import type { LanguagePack } from './LanguagePack';
 import { tokenize, detokenize, shouldProtect, hasExistingHyphen } from './guards';
 import { parseHtml, reconstructHtml, isHtml } from './sanitize';
 import { getCustomHyphenation } from '../lib/customRules';
+import { isExcluded } from '../lib/exclusionRules';
 
 /**
  * Output encoding type
@@ -78,7 +79,12 @@ function hyphenateWord(
   const trailing = trailingMatch ? trailingMatch[0] : '';
   const coreWord = word.slice(leading.length, word.length - trailing.length);
 
-  // Check for custom hyphenation rule first (highest priority)
+  // Check exclusion list first (never hyphenate these words)
+  if (isExcluded(coreWord)) {
+    return word;
+  }
+
+  // Check for custom hyphenation rule (highest priority for custom breaks)
   const customHyphenation = getCustomHyphenation(coreWord);
   if (customHyphenation) {
     return leading + customHyphenation + trailing;
