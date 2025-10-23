@@ -43,7 +43,7 @@ export function Preview() {
   return (
     <div className="flex flex-col h-full bg-card border">
       {/* Toolbar */}
-      <div className="flex flex-col justify-center gap-1.5 px-4 border-b bg-muted/30 h-[60px]">
+      <div className="flex flex-col justify-center gap-2 px-4 py-2 border-b bg-muted/30">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Eye className="h-4 w-4 text-muted-foreground" />
@@ -74,7 +74,7 @@ export function Preview() {
         </div>
 
         {/* CSS Controls */}
-        <div className="flex items-center gap-4 text-xs">
+        <div className="flex items-center gap-3 text-xs">
           {/* hyphens property */}
           <TooltipProvider>
             <Tooltip>
@@ -150,6 +150,11 @@ export function Preview() {
             Preview will appear here...
           </div>
         )}
+      </div>
+
+      {/* Bottom bar - matches Editor and Output */}
+      <div className="px-4 py-2 border-t bg-muted/20 text-xs text-muted-foreground">
+        {outputText ? 'Live preview with CSS controls' : 'Preview area'}
       </div>
     </div>
   );
