@@ -262,7 +262,7 @@ export function CustomRules() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="space-y-4">
             <div>
               <Label htmlFor="new-word">Word</Label>
               <Input
@@ -273,16 +273,28 @@ export function CustomRules() {
               />
             </div>
             <div>
-              <Label htmlFor="new-hyphenated">Hyphenated Form</Label>
+              <Label htmlFor="new-hyphenated">Hyphenation Pattern (use | to mark break points)</Label>
               <Input
                 id="new-hyphenated"
-                value={newRule.hyphenated}
-                onChange={(e) => setNewRule({ ...newRule, hyphenated: e.target.value })}
-                placeholder="Type: Logic­Line (­ = soft hyphen)"
+                value={newRule.hyphenated.replace(/\u00AD/g, '|')}
+                onChange={(e) => setNewRule({
+                  ...newRule,
+                  hyphenated: e.target.value.replace(/\|/g, '\u00AD')
+                })}
+                placeholder="e.g., Logic|Line or Front|Rack"
                 className="font-mono"
               />
+              <div className="flex items-center gap-2 mt-2 text-xs">
+                <span className="text-muted-foreground">Preview:</span>
+                <span className="font-mono" dangerouslySetInnerHTML={{
+                  __html: newRule.hyphenated.replace(/\u00AD/g, '<span class="bg-yellow-200 dark:bg-yellow-800 px-0.5 font-bold">|</span>')
+                }} />
+                {newRule.hyphenated && (
+                  <span className="text-green-600 dark:text-green-400">✓ Ready</span>
+                )}
+              </div>
               <p className="text-xs text-muted-foreground mt-1">
-                💡 Copy this soft hyphen and paste it where you want breaks: <span className="bg-yellow-200 dark:bg-yellow-800 px-2 py-0.5 rounded font-mono font-bold select-all cursor-pointer">­</span>
+                Type the word and use the <span className="font-mono bg-muted px-1 rounded">|</span> pipe character to mark where it should break
               </p>
             </div>
           </div>
@@ -313,7 +325,7 @@ export function CustomRules() {
               {rules.map((rule) => (
                 <div key={rule.id} className="px-6 py-4 hover:bg-muted/50 transition-colors">
                   {editingId === rule.id ? (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="space-y-3">
                       <div>
                         <Label htmlFor={`edit-word-${rule.id}`} className="text-xs">Word</Label>
                         <Input
@@ -324,21 +336,24 @@ export function CustomRules() {
                         />
                       </div>
                       <div>
-                        <Label htmlFor={`edit-hyphenated-${rule.id}`} className="text-xs">Hyphenated Form</Label>
+                        <Label htmlFor={`edit-hyphenated-${rule.id}`} className="text-xs">Pattern (use | for breaks)</Label>
                         <Input
                           id={`edit-hyphenated-${rule.id}`}
-                          value={editForm.hyphenated.replace(/\u00AD/g, '­')}
-                          onChange={(e) => setEditForm({ ...editForm, hyphenated: e.target.value })}
-                          placeholder="Logic­Line"
+                          value={editForm.hyphenated.replace(/\u00AD/g, '|')}
+                          onChange={(e) => setEditForm({
+                            ...editForm,
+                            hyphenated: e.target.value.replace(/\|/g, '\u00AD')
+                          })}
+                          placeholder="Logic|Line"
                           className="font-mono"
                         />
                         <p className="text-xs text-muted-foreground mt-1">
                           Preview: <span dangerouslySetInnerHTML={{
                             __html: editForm.hyphenated.replace(/\u00AD/g, '<span class="bg-yellow-200 dark:bg-yellow-800 px-0.5 font-bold">|</span>')
-                          }} /> • Copy ­ to add breaks
+                          }} />
                         </p>
                       </div>
-                      <div className="flex gap-2 sm:col-span-2">
+                      <div className="flex gap-2">
                         <Button
                           size="sm"
                           onClick={() => handleUpdate(rule.id)}
