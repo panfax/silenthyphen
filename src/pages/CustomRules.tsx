@@ -273,13 +273,17 @@ export function CustomRules() {
               />
             </div>
             <div>
-              <Label htmlFor="new-hyphenated">Hyphenated Form</Label>
+              <Label htmlFor="new-hyphenated">Hyphenated Form (use ­ between parts)</Label>
               <Input
                 id="new-hyphenated"
                 value={newRule.hyphenated}
                 onChange={(e) => setNewRule({ ...newRule, hyphenated: e.target.value })}
-                placeholder="e.g., Logic&shy;Line or Logic­Line"
+                placeholder="Logic­Line (type: Logic + soft hyphen + Line)"
+                className="font-mono"
               />
+              <p className="text-xs text-muted-foreground mt-1">
+                Tip: Type the word with visible soft hyphens (­) or use &amp;shy; HTML entity
+              </p>
             </div>
           </div>
           <Button onClick={handleAdd} className="w-full sm:w-auto">
@@ -310,16 +314,30 @@ export function CustomRules() {
                 <div key={rule.id} className="px-6 py-4 hover:bg-muted/50 transition-colors">
                   {editingId === rule.id ? (
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      <Input
-                        value={editForm.word}
-                        onChange={(e) => setEditForm({ ...editForm, word: e.target.value })}
-                        placeholder="Word"
-                      />
-                      <Input
-                        value={editForm.hyphenated}
-                        onChange={(e) => setEditForm({ ...editForm, hyphenated: e.target.value })}
-                        placeholder="Hyphenated form"
-                      />
+                      <div>
+                        <Label htmlFor={`edit-word-${rule.id}`} className="text-xs">Word</Label>
+                        <Input
+                          id={`edit-word-${rule.id}`}
+                          value={editForm.word}
+                          onChange={(e) => setEditForm({ ...editForm, word: e.target.value })}
+                          placeholder="Word"
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor={`edit-hyphenated-${rule.id}`} className="text-xs">Hyphenated Form</Label>
+                        <Input
+                          id={`edit-hyphenated-${rule.id}`}
+                          value={editForm.hyphenated.replace(/\u00AD/g, '­')}
+                          onChange={(e) => setEditForm({ ...editForm, hyphenated: e.target.value })}
+                          placeholder="Logic­Line (use ­ or &shy;)"
+                          className="font-mono"
+                        />
+                        <p className="text-xs text-muted-foreground mt-1">
+                          Current: <span dangerouslySetInnerHTML={{
+                            __html: editForm.hyphenated.replace(/\u00AD/g, '<span class="bg-yellow-200 dark:bg-yellow-800 px-0.5 font-bold">|</span>')
+                          }} />
+                        </p>
+                      </div>
                       <div className="flex gap-2 sm:col-span-2">
                         <Button
                           size="sm"
