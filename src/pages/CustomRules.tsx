@@ -5,6 +5,7 @@ import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
 import { HyphenationBuilder } from '../components/HyphenationBuilder';
+import { clearCache } from '../lib/exclusionRules';
 
 interface CustomRule {
   id: number;
@@ -233,6 +234,7 @@ export function CustomRules() {
       setNewExclusion('');
       setSuccess('Exclusion added successfully!');
       setTimeout(() => setSuccess(''), 3000);
+      clearCache(); // Clear cache so main app immediately uses new exclusions
       fetchExclusions();
     } catch (err) {
       setError('Failed to add exclusion');
@@ -275,6 +277,7 @@ export function CustomRules() {
       setBulkExclusions('');
       setSuccess(`Added ${data.results.added} words (${data.results.duplicates} duplicates skipped)`);
       setTimeout(() => setSuccess(''), 5000);
+      clearCache(); // Clear cache so main app immediately uses new exclusions
       fetchExclusions();
     } catch (err) {
       setError('Failed to add exclusions');
@@ -304,6 +307,7 @@ export function CustomRules() {
 
       setSuccess('Exclusion removed');
       setTimeout(() => setSuccess(''), 3000);
+      clearCache(); // Clear cache so main app immediately uses updated exclusions
       fetchExclusions();
     } catch (err) {
       setError('Failed to delete exclusion');
