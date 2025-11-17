@@ -3,6 +3,8 @@
  */
 import { hyphenate, type HyphenationOptions, type HyphenationResult } from '../hyphenation/engine';
 import { getLanguageById } from '../hyphenation/registry';
+import { fetchExclusionRules } from '../lib/exclusionRules';
+import { fetchCustomRules } from '../lib/customRules';
 
 export interface WorkerRequest {
   id: string;
@@ -18,11 +20,33 @@ export interface WorkerResponse {
   error?: string;
 }
 
+// Load exclusion rules and custom rules when worker starts
+let rulesLoaded = false;
+const loadRules = async () => {
+  if (rulesLoaded) return;
+
+  try {
+    await Promise.all([
+      fetchExclusionRules(true), // Force fetch
+      fetchCustomRules(true), // Force fetch
+    ]);
+    rulesLoaded = true;
+    console.log('[Worker] Exclusion and custom rules loaded');
+  } catch (error) {
+    console.error('[Worker] Failed to load rules:', error);
+  }
+};
+
+// Start loading rules immediately
+loadRules();
+
 // Worker message handler
-self.onmessage = (e: MessageEvent<WorkerRequest>) => {
+self.onmessage = async (e: MessageEvent<WorkerRequest>) => {
   const { id, text, languageId, encoding, htmlMode } = e.data;
 
   try {
+    // Ensure rules are loaded before processing
+    await loadRules();
     // Get language pack
     const languagePack = getLanguageById(languageId);
 

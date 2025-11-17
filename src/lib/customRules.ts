@@ -16,11 +16,11 @@ const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
 /**
  * Fetch custom hyphenation rules from the backend
  */
-export async function fetchCustomRules(): Promise<void> {
+export async function fetchCustomRules(force: boolean = false): Promise<void> {
   const now = Date.now();
 
-  // Use cached rules if fetched recently
-  if (now - lastFetch < CACHE_DURATION) {
+  // Use cached rules if fetched recently (unless forced)
+  if (!force && now - lastFetch < CACHE_DURATION) {
     return;
   }
 
