@@ -80,17 +80,23 @@ function hyphenateWord(
   const coreWord = word.slice(leading.length, word.length - trailing.length);
 
   // Check exclusion list first (never hyphenate these words)
-  // For compound words (e.g., "TÜV-Zertifikate"), check if ANY part is excluded
   if (isExcluded(coreWord)) {
     return word;
   }
 
-  // Check compound word parts (split by hyphen)
+  // Handle compound words (e.g., "TÜV-Zertifikate")
+  // Hyphenate each part separately, but skip excluded parts
   if (coreWord.includes('-')) {
     const parts = coreWord.split('-');
-    if (parts.some(part => isExcluded(part))) {
-      return word;
-    }
+    const hyphenatedParts = parts.map(part => {
+      // If this part is excluded, keep it as-is
+      if (isExcluded(part)) {
+        return part;
+      }
+      // Otherwise, hyphenate this part recursively
+      return hyphenateWord(part, languagePack, hypher);
+    });
+    return leading + hyphenatedParts.join('-') + trailing;
   }
 
   // Check for custom hyphenation rule (highest priority for custom breaks)
